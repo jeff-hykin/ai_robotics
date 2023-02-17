@@ -1,6 +1,6 @@
 <launch>
-  <arg name="port" default="9093" />
-  <arg name="address" default="10.229.48.167" />
+  <arg name="port" default="8080" />
+  <arg name="address" default="127.0.0.1" />
   <arg name="ssl" default="true" />
   <arg name="certfile" default="/home/yashas/Documents/tamu/sb_ros/src/sb_web/cert.pem"/>
   <arg name="keyfile" default="/home/yashas/Documents/tamu/sb_ros/src/sb_web/key.pem" />
@@ -15,8 +15,8 @@
 
   <group if="$(arg ssl)">
     <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket" output="screen">
-      <param name="certfile" value="$(arg certfile)" />
-      <param name="keyfile" value="$(arg keyfile)" />
+      <param name="certfile" value="sb_master/sb_web/cert.pem" />
+      <param name="keyfile" value="sb_master/sb_web/key.pem" />
       <param name="authenticate" value="$(arg authenticate)" />
       <param name="port" value="$(arg port)"/>
       <param name="address" value="$(arg address)"/>
