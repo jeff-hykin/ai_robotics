@@ -69,10 +69,10 @@ def execute_behavior():
     # YOUR CODE HERE                 #
     # You may modify the lines below #
     ##################################
-    joint_goal[0] =  # Enter a value
-    joint_goal[1] =  # Enter a value
-    joint_goal[2] =  # Enter a value
-    joint_goal[3] =  # Enter a value
+    joint_goal[0] = 0 # Enter a value
+    joint_goal[1] = 0 # Enter a value
+    joint_goal[2] = 0 # Enter a value
+    joint_goal[3] = 0 # Enter a value
 
     move_group.go(joint_goal, wait=True)
     plan = move_group.plan()
