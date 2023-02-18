@@ -10,20 +10,4 @@
   
   
 GET /
-GET /
-GET /
-GET /
-GET /
-
-ERROR: Broken pipe (os error 32)
-GET /
 GET /favicon.ico
-GET /
-GET /
-GET /
-GET /
-GET /
-GET /
-GET /favicon.ico
-GET /
-GET /
