@@ -15,8 +15,8 @@
 
   <group if="$(arg ssl)">
     <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket" output="screen">
-      <param name="certfile" value="sb_master/sb_web/cert.pem" />
-      <param name="keyfile" value="sb_master/sb_web/key.pem" />
+      <param name="certfile" value="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/cert.pem" />
+      <param name="keyfile" value="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/key.pem" />
       <param name="authenticate" value="$(arg authenticate)" />
       <param name="port" value="$(arg port)"/>
       <param name="address" value="$(arg address)"/>
