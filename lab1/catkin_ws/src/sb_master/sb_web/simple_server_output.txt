@@ -4,8 +4,11 @@
 
   Now serving .:
 
-      Local:      http://localhost:8083
-      Network:    http://192.168.43.158:8083
+      Local:      https://localhost:8083
+      Network:    https://192.168.43.158:8083
 
   
   
+GET /
+GET /
+GET /

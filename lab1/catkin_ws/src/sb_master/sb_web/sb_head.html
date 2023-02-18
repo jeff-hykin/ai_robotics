@@ -48,6 +48,10 @@
 			// Get the connect button
 			var connectButton = document.getElementById("connectButton");
 			var messageElement = document.getElementById("messageLog");
+            const sendMessage = (message)=>{
+                messageElement.innerHTML += `<br>...<br>...<br>${message}`
+                messageElement.scrollTop = messageElement.scrollHeight
+            }
 			var ip = document.getElementById("ip");
 			ip.value = "" + window.location.hostname;
 			var port = document.getElementById("port");
@@ -60,48 +64,48 @@
 				height, // calculated once video stream size is known
 				cameraStream;
 
-			async function cameraOn() {
-				try {
-					cameraStream = await navigator.mediaDevices.getUserMedia({
-						video: true,
-						audio: true,
-					});
-					video.srcObject = cameraStream;
-					video.play();
-					video.onloadedmetadata = function (e) {
-						height = video.videoHeight / (video.videoWidth / width);
-						console.log(height, width);
-						video.setAttribute("width", width);
-						video.setAttribute("height", height);
-						canvas.setAttribute("width", width);
-						canvas.setAttribute("height", height);
-					};
+            async function cameraOn() {
+                if (!navigator.mediaDevices) {
+                    sendMessage(`Error: check the URL<br>Make sure it has "https" and not "http"`)
+                }
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true,
+                });
+                video.srcObject = cameraStream;
+                video.play();
+                video.onloadedmetadata = function (e) {
+                    height = video.videoHeight / (video.videoWidth / width);
+                    console.log(height, width);
+                    video.setAttribute("width", width);
+                    video.setAttribute("height", height);
+                    canvas.setAttribute("width", width);
+                    canvas.setAttribute("height", height);
+                };
 
-					var audioCtx = new (window.AudioContext ||
-						window.webkitAudioContext)();
-					var source = audioCtx.createMediaStreamSource(cameraStream);
+                console.debug(`window.AudioContext is:`,window.AudioContext)
+                console.debug(`window.webkitAudioContext is:`,window.webkitAudioContext)
+                var audioCtx = new (window.AudioContext ||
+                    window.webkitAudioContext)();
+                var source = audioCtx.createMediaStreamSource(cameraStream);
 
-					var bufferSize = 2048;
-					var recorder = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+                var bufferSize = 2048;
+                var recorder = audioCtx.createScriptProcessor(bufferSize, 1, 1);
 
-					recorder.onaudioprocess = function (e) {
-						var input = e.inputBuffer.getChannelData(0);
-						var audioData = new Float32Array(input);
-						var msg = new ROSLIB.Message({
-							data: Array.from(audioData),
-						});
-						// console.log(msg);
-						audioMessage = msg;
-						// audioTopic.publish(audioMessage);
-					};
+                recorder.onaudioprocess = function (e) {
+                    var input = e.inputBuffer.getChannelData(0);
+                    var audioData = new Float32Array(input);
+                    var msg = new ROSLIB.Message({
+                        data: Array.from(audioData),
+                    });
+                    // console.log(msg);
+                    audioMessage = msg;
+                    // audioTopic.publish(audioMessage);
+                };
 
-					source.connect(recorder);
-					recorder.connect(audioCtx.destination);
-				} catch (err) {
-					console.log("The following error occurred: " + err.name);
-					console.error(err);
-				}
-			}
+                source.connect(recorder);
+                recorder.connect(audioCtx.destination);
+            }
 
 			function cameraOff() {
 				cameraStream.stop();
@@ -146,14 +150,12 @@
 				});
 				ros.on("connection", function () {
 					console.log("Connected to websocket server.");
-                    messageElement.innerHTML += `<br>...<br>...<br>Success!`
-                    messageElement.scrollTop = messageElement.scrollHeight
+                    sendMessage("Success!")
 				});
 
 				ros.on("error", function (error) {
 					console.log("Error connecting to websocket server: ", error);
-                    messageElement.innerHTML += `<br>...<br>...<br>1. Make sure <code>roslaunch rb_server.launch</code> is running<br>2. Try opening this in a new tab:<br><a href="https://${baseValue}">https://${baseValue}</a><br>3. Click advanced -> open anyways<br>4.Then re-run this test<br>`
-                    messageElement.scrollTop = messageElement.scrollHeight
+                    sendMessage(`1. Make sure <code>roslaunch rb_server.launch</code> is running<br>2. Try opening this in a new tab:<br><a href="https://${baseValue}">https://${baseValue}</a><br>3. Click Advanced -> Accept Risk and Continue<br>4.Then re-run this test<br>`)
 				});
 
 				ros.on("close", function () {
@@ -171,31 +173,36 @@
 					name: "/audio",
 					messageType: "std_msgs/Float32MultiArray",
 				});
-			});
+                
+            });
 
 			// function that is run by trigger several times a second
 			// takes snapshot of video to canvas, encodes the images as base 64 and sends it to the ROS topic
 			function takepicture() {
-				canvas.width = width;
-				canvas.height = height;
+                if (imageTopic) {
+                    canvas.width = width;
+                    canvas.height = height;
 
-				canvas
-					.getContext("2d")
-					.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    canvas
+                        .getContext("2d")
+                        .drawImage(video, 0, 0, canvas.width, canvas.height);
 
-				var data = canvas.toDataURL("image/jpeg");
-				var a = document.createElement("a");
-				a.href = data;
-				var imageMessage = new ROSLIB.Message({
-					format: "jpeg",
-					data: data.replace("data:image/jpeg;base64,", ""),
-				});
+                    var data = canvas.toDataURL("image/jpeg");
+                    var a = document.createElement("a");
+                    a.href = data;
+                    var imageMessage = new ROSLIB.Message({
+                        format: "jpeg",
+                        data: data.replace("data:image/jpeg;base64,", ""),
+                    });
 
-				imageTopic.publish(imageMessage);
+                    imageTopic.publish(imageMessage);
+                }
 			}
 
 			function publishaudio() {
-				audioTopic.publish(audioMessage);
+                if (audioTopic) {
+                    audioTopic.publish(audioMessage);
+                }
 			}
 
 			// turning on and off the timer that triggers sending pictures and imu information several times a second
