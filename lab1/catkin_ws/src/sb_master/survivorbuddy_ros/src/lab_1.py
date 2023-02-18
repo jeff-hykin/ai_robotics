@@ -43,6 +43,8 @@ def detect_noise(data):
     Return:
         bool: alert
     """
+    print(f'''data = {data}''')
+    help(data)
     alert = False
     ##################
     # YOUR CODE HERE #
