@@ -67,44 +67,54 @@
             async function cameraOn() {
                 if (!navigator.mediaDevices) {
                     sendMessage(`Error: check the URL<br>Make sure it has "https" and not "http"`)
+                } else {
+                    
+                    try {
+                        cameraStream = await navigator.mediaDevices.getUserMedia({
+                            video: true,
+                            audio: true,
+                        });
+                        video.srcObject = cameraStream;
+                        video.play();
+                        video.onloadedmetadata = function (e) {
+                            height = video.videoHeight / (video.videoWidth / width);
+                            console.log(height, width);
+                            video.setAttribute("width", width);
+                            video.setAttribute("height", height);
+                            canvas.setAttribute("width", width);
+                            canvas.setAttribute("height", height);
+                        };
+                    } catch (error) {
+                        sendMessage(`Looks like there was an issue connecting to the camera. Make sure this browser can actually connect to your camera (for example try logging into Zoom and using "Your Room" and try turning on the camera)`)
+                        throw error
+                    }
+                    
+                    try {
+                        var audioCtx = new (window.AudioContext ||
+                            window.webkitAudioContext)();
+                        var source = audioCtx.createMediaStreamSource(cameraStream);
+
+                        var bufferSize = 2048;
+                        var recorder = audioCtx.createScriptProcessor(bufferSize, 1, 1);
+
+                        recorder.onaudioprocess = function (e) {
+                            var input = e.inputBuffer.getChannelData(0);
+                            var audioData = new Float32Array(input);
+                            var msg = new ROSLIB.Message({
+                                data: Array.from(audioData),
+                            });
+                            // console.log(msg);
+                            audioMessage = msg;
+                            // audioTopic.publish(audioMessage);
+                        };
+
+                        source.connect(recorder);
+                        recorder.connect(audioCtx.destination);
+                    } catch (error) {
+                        sendMessage(`Looks like there was an issue connecting to the microphone. Make sure this browser can actually connect to your camera (for example try logging into Zoom and using "Your Room" and try turning on the camera)`)
+                        throw error
+                    }
                 }
-                cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: true,
-                });
-                video.srcObject = cameraStream;
-                video.play();
-                video.onloadedmetadata = function (e) {
-                    height = video.videoHeight / (video.videoWidth / width);
-                    console.log(height, width);
-                    video.setAttribute("width", width);
-                    video.setAttribute("height", height);
-                    canvas.setAttribute("width", width);
-                    canvas.setAttribute("height", height);
-                };
-
-                console.debug(`window.AudioContext is:`,window.AudioContext)
-                console.debug(`window.webkitAudioContext is:`,window.webkitAudioContext)
-                var audioCtx = new (window.AudioContext ||
-                    window.webkitAudioContext)();
-                var source = audioCtx.createMediaStreamSource(cameraStream);
-
-                var bufferSize = 2048;
-                var recorder = audioCtx.createScriptProcessor(bufferSize, 1, 1);
-
-                recorder.onaudioprocess = function (e) {
-                    var input = e.inputBuffer.getChannelData(0);
-                    var audioData = new Float32Array(input);
-                    var msg = new ROSLIB.Message({
-                        data: Array.from(audioData),
-                    });
-                    // console.log(msg);
-                    audioMessage = msg;
-                    // audioTopic.publish(audioMessage);
-                };
-
-                source.connect(recorder);
-                recorder.connect(audioCtx.destination);
             }
 
 			function cameraOff() {
