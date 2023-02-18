@@ -1,12 +1,11 @@
 ### Setup Web App
 
-1. start the node server: `cd catkin_ws/src/sb_master/sb_web && npx http-server -S -C cert.pem -o -K key.pem &; cd -`
-    - open up server address: https://127.0.0.1:8080/sb_head.html
+1. start the node server: `cd catkin_ws/src/sb_master/sb_web && npx http-server --port 8083 -S -C cert.pem -o -K key.pem &; cd -`
+    - open up server address: https://127.0.0.1:8083/sb_head.html
 
 2. `cd catkin_ws/src/sb_master/sb_web && roslaunch rb_server.launch; cd -`
     - started roslaunch server: http://pop-os:35871/
-    - rosbridge_websocket: http://10.229.48.167:9093
-    - rosbridge_websocket: https://10.229.48.167:9093
+    - rosbridge_websocket: http://127.0.0.1:8080
     - ROS_MASTER_URI: http://localhost:11311
     
 
@@ -16,7 +15,7 @@ Once that IP address has been found,
 on the device that will be serving as the head (phone on the Survivor Buddy or your own phone or computer when testing)
 open up the IP address and port of the rosbridge server.
 
-If my IP were 10.229.48.167 and the port were 9093 for the rosbridge server, I would navigate to `https://10.229.48.167:9093`.
+If my IP were 127.0.0.1 and the port were 8080 for the rosbridge server, I would navigate to `https://127.0.0.1:8080`.
 
 Once there, you should see a warning that says that it is not secureclick on advanced or more information and continue to the site.
 
@@ -26,7 +25,7 @@ You should then see a blue screen that looks like the following.
 
 ![autobahn-screen](images/autobahn.jpg "Success after going through chrome warning")
 
-Then navigate back to the IP address and port of the http-server and the sb_head html. Again, if my IP address were 10.229.48.167, I would navigate to `https://10.229.48.167:8080/sb_head.html`.
+Then navigate back to the IP address and port of the http-server and the sb_head html. Again, if my IP address were 127.0.0.1, I would navigate to `https://127.0.0.1:8080/sb_head.html`.
 
 ![successful-load](images/webpage-success.jpg "Successful webpage load")
 
