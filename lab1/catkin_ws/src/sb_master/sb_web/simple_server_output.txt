@@ -10,8 +10,13 @@
   
   
 GET /
-
-ERROR: No such file or directory (os error 2), open './index.html'
+GET /
+GET /
+GET /favicon.ico
+GET /
+GET /
+GET /
+GET /
 GET /favicon.ico
 
-ERROR: No such file or directory (os error 2), open './favicon.ico'
+ERROR: Broken pipe (os error 32)

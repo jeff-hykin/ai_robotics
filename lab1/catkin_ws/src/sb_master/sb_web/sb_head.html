@@ -138,6 +138,7 @@
 				});
 				ros.on("connection", function () {
 					console.log("Connected to websocket server.");
+                    window.alert("Connection Successful!")
 				});
 
 				ros.on("error", function (error) {
