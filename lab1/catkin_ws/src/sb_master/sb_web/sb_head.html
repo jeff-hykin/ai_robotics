@@ -126,6 +126,9 @@
 				if (ipaddr == "") {
 					// default to localhost if no ip address is provided
 					ipaddr = window.location.hostname;
+                    if (ipaddr == "localhost") {
+                        ipaddr = "127.0.0.1"
+                    }
 				}
 				var portVal = port.value;
 				var connUrl = "wss://" + ipaddr + ":" + portVal;

@@ -5,7 +5,7 @@
 
 2. `cd catkin_ws/src/sb_master/sb_web && roslaunch rb_server.launch; cd -`
     - started roslaunch server: http://pop-os:35871/
-    - rosbridge_websocket: http://127.0.0.1:8080
+    - rosbridge_websocket: https://127.0.0.1:8080
     - ROS_MASTER_URI: http://localhost:11311
     
 
