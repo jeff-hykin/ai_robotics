@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+        <link rel="stylesheet" href="https://unpkg.com/css-baseline/css/4.css"> 
 		<script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
 		<script src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r71/three.min.js"></script>
@@ -39,11 +40,14 @@
 		<input id="ip" type="text" placeholder="IP Address" />
 		<input id="port" type="text" placeholder="Port" value="8080" />
 		<button id="connectButton">Connect to ROSbridge Server</button>
-
+        <span id="messageLog" style="padding: 1rem; position: fixed; right: 0; top: 0; height: 100vh; overflow: auto; width: 20rem; background-color: whitesmoke; border: 2px gray solid;">
+            (message log)
+        </span>
 		<script>
 			document.getElementById("startstopicon").setAttribute("src", RECORD_OFF);
 			// Get the connect button
 			var connectButton = document.getElementById("connectButton");
+			var messageElement = document.getElementById("messageLog");
 			var ip = document.getElementById("ip");
 			ip.value = "" + window.location.hostname;
 			var port = document.getElementById("port");
@@ -129,21 +133,27 @@
                     if (ipaddr == "localhost") {
                         ipaddr = "127.0.0.1"
                     }
+                    if (ipaddr == "127.0.0.1") {
+                        window.alert(`Note: your connection should be something other than localhost (aka 127.0.0.1).\n\nI'll still let you try with localhost but just note that the public facing address should be used instead.`)
+                    }
 				}
 				var portVal = port.value;
-				var connUrl = "wss://" + ipaddr + ":" + portVal;
+                const baseValue = ipaddr + ":" + portVal
+				var connUrl = "wss://" + baseValue;
 				console.log("Attempting to connect to: " + connUrl);
 				ros = new ROSLIB.Ros({
 					url: connUrl,
 				});
 				ros.on("connection", function () {
 					console.log("Connected to websocket server.");
-                    window.alert("Connection Successful!")
+                    messageElement.innerHTML += `<br>...<br>...<br>Success!`
+                    messageElement.scrollTop = messageElement.scrollHeight
 				});
 
 				ros.on("error", function (error) {
 					console.log("Error connecting to websocket server: ", error);
-					window.alert("Error connecting to websocket server");
+                    messageElement.innerHTML += `<br>...<br>...<br>1. Make sure <code>roslaunch rb_server.launch</code> is running<br>2. Try opening this in a new tab:<br><a href="https://${baseValue}">https://${baseValue}</a><br>3. Click advanced -> open anyways<br>4.Then re-run this test<br>`
+                    messageElement.scrollTop = messageElement.scrollHeight
 				});
 
 				ros.on("close", function () {
