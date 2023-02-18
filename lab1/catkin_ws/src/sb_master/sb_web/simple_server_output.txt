@@ -26,3 +26,4 @@ GET /
 GET /
 GET /favicon.ico
 GET /
+GET /
