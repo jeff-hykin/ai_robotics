@@ -2,8 +2,8 @@
   <arg name="port" default="9093" />
   <arg name="address" default="10.229.48.167" />
   <arg name="ssl" default="true" />
-  <arg name="certfile" default="/home/yashas/Documents/tamu/sb_ros/src/sb_web/cert.pem"/>
-  <arg name="keyfile" default="/home/yashas/Documents/tamu/sb_ros/src/sb_web/key.pem" />
+  <arg name="certfile" default="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/cert.pem"/>
+  <arg name="keyfile" default="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/key.pem" />
 
   <arg name="retry_startup_delay" default="5" />
 
