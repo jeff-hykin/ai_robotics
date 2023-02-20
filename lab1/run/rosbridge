@@ -36,15 +36,7 @@ else
     # 
     # rosbridge server
     # 
-    question="start rosbridge? [y/n]";answer=''
-    while true; do
-        echo "$question"; read response
-        case "$response" in
-            [Yy]* ) answer='yes'; break;;
-            [Nn]* ) answer='no'; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
+    server_folder="$catkin_dir/src/sb_master/sb_web"
     
     builtin cd "$server_folder"
     roslaunch rb_server.launch

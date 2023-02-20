@@ -48,67 +48,41 @@ else
         # 
         # setup node server
         # 
-            question="start node server? [y/n]";answer=''
-            while true; do
-                echo "$question"; read response
-                case "$response" in
-                    [Yy]* ) answer='yes'; break;;
-                    [Nn]* ) answer='no'; break;;
-                    * ) echo "Please answer yes or no.";;
-                esac
-            done
-            
             builtin cd "$server_folder"
             # npm install
             host_ip_address="127.0.0.1"
-            if [ "$answer" = 'yes' ]; then
-                # if ansifilter doesnt exist
-                if [ -z "$(command -v "ansifilter")" ]
-                then
-                    nix-env -iA nixpkgs.ansifilter -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
-                fi
-                # if deno doesnt exist
-                if [ -z "$(command -v "deno")" ]
-                then
-                    curl -fsSL https://deno.land/x/install/install.sh | sh
-                    # nix-env -iA nixpkgs.deno -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
-                    export PATH="/home/jeffhykin/.deno/bin:$PATH"
-                fi
-                
-                # if denoliver doesnt exist
-                if [ -z "$(command -v "denoliver")" ]
-                then
-                    deno install --allow-net --allow-read --allow-write --allow-run https://deno.land/x/denoliver/mod.ts
-                    export PATH="/home/jeffhykin/.deno/bin:$PATH"
-                fi
-                
-                
-                port_number=8083
-                {
-                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
-                    echo "first deno failed" &&
-                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
-                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
-                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
-                    echo "Simple server failed too many times, please restart"
-                } &
-                # npx http-server --port 8083 -S -C cert.pem -o -K key.pem &
-                echo '...'
-                sleep 1
-                echo '...'
-                sleep 1
-                echo '...'
-                sleep 1
-                echo '...'
-                sleep 1
-                echo '...'
-                sleep 1
-                host_ip_address="$(cat simple_server_output.txt | ansifilter | grep 'Network:' | sd '[ \t]*Network:[ \t]*https?://(.+)?:'"$port_number" '${1}')"
-                echo 'host_ip_address: '"$host_ip_address"
-            else
-                echo "okay"
+            # if ansifilter doesnt exist
+            if [ -z "$(command -v "ansifilter")" ]
+            then
+                nix-env -iA nixpkgs.ansifilter -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
             fi
-            builtin cd - 1>/dev/null
+            # if deno doesnt exist
+            if [ -z "$(command -v "deno")" ]
+            then
+                curl -fsSL https://deno.land/x/install/install.sh | sh
+                # nix-env -iA nixpkgs.deno -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
+                export PATH="/home/jeffhykin/.deno/bin:$PATH"
+            fi
+            
+            # if denoliver doesnt exist
+            if [ -z "$(command -v "denoliver")" ]
+            then
+                deno install --allow-net --allow-read --allow-write --allow-run https://deno.land/x/denoliver/mod.ts
+                export PATH="/home/jeffhykin/.deno/bin:$PATH"
+            fi
+            
+            
+            port_number=8083
+            {
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                echo "first deno failed" &&
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                echo "Simple server failed too many times, please restart"
+            } &
+            host_ip_address="$(cat simple_server_output.txt | ansifilter | grep 'Network:' | sd '[ \t]*Network:[ \t]*https?://(.+)?:'"$port_number" '${1}')"
+            echo 'host_ip_address: '"$host_ip_address"
 
 
         # 
@@ -131,14 +105,11 @@ else
                 fi
             fi
             
-            
-            builtin cd "$server_folder"
             sd 'address" default=".*?"' 'address" default="'"$host_ip_address"'"' rb_server.launch
             sd 'value=".*sb_master/sb_web/cert\.pem' "value=\"$PWD/cert.pem" rb_server.launch
             sd 'value=".*sb_master/sb_web/key\.pem' "value=\"$PWD/key.pem" rb_server.launch
             sd 'default=".*sb_master/sb_web/cert\.pem' "default=\"$PWD/cert.pem" rb_server.launch
             sd 'default=".*sb_master/sb_web/key\.pem' "default=\"$PWD/key.pem" rb_server.launch
-            builtin cd - 1>/dev/null
     fi
 
 fi
