@@ -43,8 +43,10 @@ def detect_noise(data):
     Return:
         bool: alert
     """
-    print(f'''data = {data}''')
-    help(data)
+    
+    list(data.data) # a list of values between -1 and 1 that corrispond to audio-amplitude
+                    # this function gets run 40 times a second and generally contains 2048 elements
+                    # however some of the data inside the array is duplicated (e.g. overlaps with previous data.data)
     alert = False
     ##################
     # YOUR CODE HERE #
@@ -71,10 +73,10 @@ def execute_behavior():
     # YOUR CODE HERE                 #
     # You may modify the lines below #
     ##################################
-    joint_goal[0] = 0 # Enter a value
-    joint_goal[1] = 0 # Enter a value
-    joint_goal[2] = 0 # Enter a value
-    joint_goal[3] = 0 # Enter a value
+    joint_goal[0] = 0 # Enter a value (radians not degrees, and must be >= -45° and  <= 45°)
+    joint_goal[1] = 0 # Enter a value (radians not degrees, and must be >= -45° and  <= 45°)
+    joint_goal[2] = 0 # Enter a value (radians not degrees, and must be >= -45° and  <= 45°)
+    joint_goal[3] = 0 # Enter a value (radians not degrees, and must be >= -45° and  <= 45°)
 
     move_group.go(joint_goal, wait=True)
     plan = move_group.plan()

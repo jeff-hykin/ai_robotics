@@ -1,25 +1,29 @@
-### Step 1: Setup Web App
+### Step 0:
 
-1. start the node server: `cd catkin_ws/src/sb_master/sb_web && npx http-server --port 8083 -S -C cert.pem -o -K key.pem &; cd -`
-    - open up server address: https://127.0.0.1:8083/sb_head.html
+Install everything:
 
-2. `cd catkin_ws/src/sb_master/sb_web && roslaunch rb_server.launch; cd -`
-    - started roslaunch server: http://pop-os:35871/
-    - rosbridge_websocket: https://127.0.0.1:8080
-    - ROS_MASTER_URI: http://localhost:11311
+```sh
+cd lab1
+. ./.envrc
+```
+
+
+### Step 1: Setup Camera Server
+
+1. start the node server: `run/camera_server`
+2. start the rosbridge: `run/rosbridge`
 
 ### Step 2: Detect Noise
 
 1. Start the webserver, connect a device with input
-2. See `detect_noise` for args and desired output
+2. See `def detect_noise`, fill it out according to the comments
 3. Run `python lab_1.py` to test if the function works
 4. You should see `"Noise detected"` being logged into the terminal when a lound noise is detected.
 
 ### Step 3: Execute behavior in MoveIt
 
 1. Find the `execute_behavior` function in `lab_1.py`
-2. Start `MoveIt`, by running `roslaunch sb_moveit_config demo.launch`
-    - Note: For the safety of the robot, the angle by which each joint can be moved from the rest position has been restricted to stay within [-45, 45] degrees. At the rest position, all the joint angles are 0 degrees.
+2. 
 
 ### Step 4: Test on Survivor Buddy
 
