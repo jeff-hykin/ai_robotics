@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+path_to_file=""
+file_name=".envrc"
+folder_to_look_in="$PWD"
+while :
+do
+    # check if file exists
+    if [ -f "$folder_to_look_in/$file_name" ]
+    then
+        path_to_file="$folder_to_look_in/$file_name"
+        break
+    else
+        if [ "$folder_to_look_in" = "/" ]
+        then
+            break
+        else
+            folder_to_look_in="$(dirname "$folder_to_look_in")"
+        fi
+    fi
+done
+if [ -z "$path_to_file" ]
+then
+    #
+    # what to do if file never found
+    #
+    echo "I couldn't find your .envrc file"
+    echo "please run the command from the folder with the .envrc"
+else
+
+    # go to the path
+    cd "$(dirname "$path_to_file")"
+    # source it
+    . ./.envrc
+
+    # 
+    # setup servers
+    # 
+    server_folder="$catkin_dir/src/sb_master/sb_web"
+
+    if ! [ -d "$server_folder" ]
+    then
+        echo "make sure you run"
+        echo "I looked for a folder here:"
+        echo "    $server_folder"
+        echo "but I couldn't find one"
+    else
+        # 
+        # setup node server
+        # 
+            # if sd doesnt exist (sd is a better version of sed)
+            if [ -z "$(command -v "sd")" ]
+            then
+                nix-env -iA nixpkgs.sd -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
+            fi
+            
+            question="start node server? [y/n]";answer=''
+            while true; do
+                echo "$question"; read response
+                case "$response" in
+                    [Yy]* ) answer='yes'; break;;
+                    [Nn]* ) answer='no'; break;;
+                    * ) echo "Please answer yes or no.";;
+                esac
+            done
+            
+            builtin cd "$server_folder"
+            # npm install
+            host_ip_address="127.0.0.1"
+            if [ "$answer" = 'yes' ]; then
+                # if ansifilter doesnt exist
+                if [ -z "$(command -v "ansifilter")" ]
+                then
+                    nix-env -iA nixpkgs.ansifilter -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
+                fi
+                # if deno doesnt exist
+                if [ -z "$(command -v "deno")" ]
+                then
+                    nix-env -iA nixpkgs.deno -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
+                fi
+                
+                # if denoliver doesnt exist
+                if [ -z "$(command -v "denoliver")" ]
+                then
+                    deno install --allow-net --allow-read --allow-write --allow-run https://deno.land/x/denoliver/mod.ts
+                    export PATH="/home/jeffhykin/.deno/bin:$PATH"
+                fi
+                
+                
+                port_number=8083
+                {
+                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                    echo "first deno failed" &&
+                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                    denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                    echo "Simple server failed too many times, please restart"
+                } &
+                # npx http-server --port 8083 -S -C cert.pem -o -K key.pem &
+                echo '...'
+                sleep 1
+                echo '...'
+                sleep 1
+                echo '...'
+                sleep 1
+                echo '...'
+                sleep 1
+                echo '...'
+                sleep 1
+                host_ip_address="$(cat simple_server_output.txt | ansifilter | grep 'Network:' | sd '[ \t]*Network:[ \t]*https?://(.+)?:'"$port_number" '${1}')"
+                echo 'host_ip_address: '"$host_ip_address"
+            else
+                echo "okay"
+            fi
+            builtin cd - 1>/dev/null
+
+
+        # 
+        # patch rb_server.launch (inject correct cert.pem and key.pem paths, and default host address)
+        # 
+            builtin cd "$server_folder"
+            sd 'address" default=".*?"' 'address" default="'"$host_ip_address"'"' rb_server.launch
+            sd 'value=".*sb_master/sb_web/cert\.pem' "value=\"$PWD/cert.pem" rb_server.launch
+            sd 'value=".*sb_master/sb_web/key\.pem' "value=\"$PWD/key.pem" rb_server.launch
+            sd 'default=".*sb_master/sb_web/cert\.pem' "default=\"$PWD/cert.pem" rb_server.launch
+            sd 'default=".*sb_master/sb_web/key\.pem' "default=\"$PWD/key.pem" rb_server.launch
+            builtin cd - 1>/dev/null
+    fi
+
+fi
+
