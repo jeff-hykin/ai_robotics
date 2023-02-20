@@ -22,8 +22,8 @@ cd lab1
 
 ### Step 3: Execute behavior in MoveIt
 
-1. Find the `execute_behavior` function in `lab_1.py`
-2. 
+1. Find the `def execute_behavior` function in `lab_1.py`
+2. Start moveit with `run/moveit`
 
 ### Step 4: Test on Survivor Buddy
 
