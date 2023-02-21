@@ -1,9 +1,9 @@
 <launch>
-  <arg name="port" default="8080" />
-  <arg name="address" default="192.168.43.158" />
+  <arg name="port" default="9093" />
+  <arg name="address" default="127.0.0.1" />
   <arg name="ssl" default="true" />
-  <arg name="certfile" default="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/cert.pem"/>
-  <arg name="keyfile" default="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/key.pem" />
+  <arg name="certfile" default="sb_master/sb_web/cert.pem"/>
+  <arg name="keyfile" default="sb_master/sb_web/key.pem" />
 
   <arg name="retry_startup_delay" default="5" />
 
@@ -15,8 +15,8 @@
 
   <group if="$(arg ssl)">
     <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket" output="screen">
-      <param name="certfile" value="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/cert.pem" />
-      <param name="keyfile" value="/home/jeffhykin/repos/ai_robotics/lab1/catkin_ws/src/sb_master/sb_web/key.pem" />
+      <param name="certfile" value="sb_master/sb_web/cert.pem" />
+      <param name="keyfile" value="sb_master/sb_web/key.pem" />
       <param name="authenticate" value="$(arg authenticate)" />
       <param name="port" value="$(arg port)"/>
       <param name="address" value="$(arg address)"/>

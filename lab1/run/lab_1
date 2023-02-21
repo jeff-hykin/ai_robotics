@@ -36,21 +36,6 @@ else
     # 
     # run lab_1.py
     # 
-    question="run lab_1.py? [y/n]";answer=''
-    while true; do
-        echo "$question"; read response
-        case "$response" in
-            [Yy]* ) answer='yes'; break;;
-            [Nn]* ) answer='no'; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-    
-    if [ "$answer" = 'yes' ]; then
-        echo "Make sure to turn on the camera on the webserver"
-        python3 -m pip install numpy blissful_basics
-        python3 ./catkin_ws/src/sb_master/survivorbuddy_ros/src/lab_1.py
-    else
-        echo "okay"
-    fi
+    echo "Make sure to turn on the camera on the webserver"
+    python3 ./catkin_ws/src/sb_master/survivorbuddy_ros/src/lab_1.py
 fi

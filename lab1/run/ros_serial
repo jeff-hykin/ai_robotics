@@ -31,9 +31,10 @@ else
     cd "$(dirname "$path_to_file")"
     # source it
     . ./.envrc
-
-    # 
-    # run moveit demo
-    # 
-    roslaunch sb_moveit_config demo.launch
+    
+    
+    # connect to moveit
+    python3 sb_interface.py &
+    # run the command
+    rosrun rosserial_python serial_node.py /dev/ttyUSB0
 fi

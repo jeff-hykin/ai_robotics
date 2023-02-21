@@ -35,5 +35,6 @@ else
     # 
     # run moveit demo
     # 
-    roslaunch sb_moveit_config demo.launch
+    cd "$server_folder"
+    python3 sb_interface.py
 fi
