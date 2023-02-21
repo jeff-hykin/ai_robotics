@@ -9,7 +9,7 @@ cd lab1
 
 ### Step 1.1: Setup Camera Server
 
-Try `run/camera_server`
+Try `run/1_camera_server`
 
 If that doesn't work then:
 
@@ -22,7 +22,7 @@ npx http-server -S -C cert.pem -o -K key.pem
 
 ### Step 1.2: Setup Rosbridge
 
-Try `run/ros_bridge_server`
+Try `run/2_ros_bridge_server`
 
 If that doesn't work then:
 
@@ -51,15 +51,15 @@ If that doesn't work then:
 ### Step 3: Execute behavior in MoveIt
 
 1. Find the `def execute_behavior` function in that `lab_1.py`
-2. Start moveit with `run/moveit`, if that doesn't work then run `. ./.envrc; roslaunch sb_moveit_config demo.launch`
+2. Start moveit with `run/3_moveit`, if that doesn't work then run `. ./.envrc; roslaunch sb_moveit_config demo.launch`
 
 ### Step 4: Test on Survivor Buddy
 
 1. Plug in power cord
 2. Plug in the USB cable from the Survivor Buddy
 3. Make sure it is being detected by running the command `ls /dev/ttyUSB*`, you should see /dev/ttyUSB0 as the output of the previous command.
-4. To connect try `run/ros_serial`, if that fails try; `. ./.envrc; python3 sb_interface.py &; rosrun rosserial_python serial_node.py /dev/ttyUSB0`
-5. To test that the microcontroller is receiving commands, run `sb_test_joint_positions.py`
+4. To connect try `run/4_ros_serial`, if that fails try; `. ./.envrc; python3 sb_interface.py &; rosrun rosserial_python serial_node.py /dev/ttyUSB0`
+5. To test that the microcontroller is receiving commands, run `run/test_joints`
 6. Try `run/lab_1`, if that doesn't work then `. ./.envrc; python3 ./catkin_ws/src/sb_master/survivorbuddy_ros/src/lab_1.py`
 7. Record a video of you clapping/making a loud noise and Survivor Buddy executing the "Startle" behavior.
 
