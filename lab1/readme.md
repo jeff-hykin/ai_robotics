@@ -38,11 +38,11 @@ If that doesn't work then:
 1. Start the webserver
 2. Start the rosbridge
 3. Get a device with a camera
-    - make sure its on the same wifi
-    - open up a browser
-    - go to the ip-address of the camera server
+    - make sure its on the same wifi as your laptop
+    - open up a browser on the device
+    - go to `https` (not `http`) then the ip-address that the camera server printed out
     - click the "Connect to ROSbridge Server"
-    - then toggle the camera switch to the on position
+    - then, if success, toggle the camera switch to the "on" position
 4. See `def detect_noise` inside of `survivorbuddy_ros/src/lab_1.py` 
 5. Add some print statements to `def detect_noise`
 6. Try `run/lab_1`, if that doesn't work then `. ./.envrc; python3 ./catkin_ws/src/sb_master/survivorbuddy_ros/src/lab_1.py`
