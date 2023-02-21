@@ -106,11 +106,16 @@ else
                 fi
             fi
             
-            sd 'address" default=".*?"' 'address" default="'"$host_ip_address"'"' rb_server.launch
-            sd 'value=".*sb_master/sb_web/cert\.pem' "value=\"$PWD/cert.pem" rb_server.launch
-            sd 'value=".*sb_master/sb_web/key\.pem' "value=\"$PWD/key.pem" rb_server.launch
-            sd 'default=".*sb_master/sb_web/cert\.pem' "default=\"$PWD/cert.pem" rb_server.launch
-            sd 'default=".*sb_master/sb_web/key\.pem' "default=\"$PWD/key.pem" rb_server.launch
+            # if sd exists
+            if [ -n "$(command -v "sd")" ]
+            then
+                
+                sd 'address" default=".*?"' 'address" default="'"$host_ip_address"'"' rb_server.launch
+                sd 'value=".*sb_master/sb_web/cert\.pem' "value=\"$PWD/cert.pem" rb_server.launch
+                sd 'value=".*sb_master/sb_web/key\.pem' "value=\"$PWD/key.pem" rb_server.launch
+                sd 'default=".*sb_master/sb_web/cert\.pem' "default=\"$PWD/cert.pem" rb_server.launch
+                sd 'default=".*sb_master/sb_web/key\.pem' "default=\"$PWD/key.pem" rb_server.launch
+            fi
     fi
 
 fi
