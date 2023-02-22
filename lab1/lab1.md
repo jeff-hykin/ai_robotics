@@ -3,7 +3,6 @@
 Install everything:
 
 ```sh
-cd lab1
 . ./.envrc
 ```
 
@@ -27,8 +26,8 @@ Try `run/2_ros_bridge_server`
 If that doesn't work then:
 
 1. figure out your ip address (either `ifconfig` or `ip address`, and look around for things that look like addresses)
-2. get the path to your cert file. `cd lab1/catkin_ws/src/sb_master/sb_web; echo; echo "$PWD/cert.pem"`
-3. get the path to your key file.  `cd lab1/catkin_ws/src/sb_master/sb_web; echo; echo "$PWD/key.pem"`
+2. get the path to your cert file. `cd catkin_ws/src/sb_master/sb_web; echo; echo "$PWD/cert.pem"`
+3. get the path to your key file.  `cd catkin_ws/src/sb_master/sb_web; echo; echo "$PWD/key.pem"`
 4. open rb_server.launch for editing ex: `gedit rb_server.launch`
 5. replace the cert file path (two places), key file path (two places), and ip address 
 6. run `roslaunch rb_server.launch`
