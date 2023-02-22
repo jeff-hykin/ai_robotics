@@ -49,12 +49,17 @@ else
         # setup node server
         # 
             builtin cd "$server_folder"
-            # npm install
+            npm install
+            
             host_ip_address="127.0.0.1"
+            
+            http-server -S -C cert.pem -o -K key.pem
+            
             # if ansifilter doesnt exist
             if [ -z "$(command -v "ansifilter")" ]
             then
-                nix-env -iA nixpkgs.ansifilter -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
+                echo
+                # nix-env -iA nixpkgs.ansifilter -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
             fi
             # if deno doesnt exist
             if [ -z "$(command -v "deno")" ]
@@ -74,14 +79,14 @@ else
             
             port_number=8083
             {
-                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | tee simple_server_output.txt | grep -v "Local:" ||
                 echo "first deno failed" &&
-                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
-                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
-                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | ansifilter | tee simple_server_output.txt | grep -v "Local:" ||
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | tee simple_server_output.txt | grep -v "Local:" ||
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | tee simple_server_output.txt | grep -v "Local:" ||
+                denoliver -t -p "$port_number" --certFile cert.pem --keyFile key.pem . | tee simple_server_output.txt | grep -v "Local:" ||
                 echo "Simple server failed too many times, please restart"
             } &
-            host_ip_address="$(cat simple_server_output.txt | ansifilter | grep 'Network:' | sd '[ \t]*Network:[ \t]*https?://(.+)?:'"$port_number" '${1}')"
+            host_ip_address="$(cat simple_server_output.txt | grep 'Network:' | sd 'Network:.*?https?://(.+)?:'"$port_number" '${1}')"
             echo 'host_ip_address: '"$host_ip_address"
 
 
@@ -94,10 +99,11 @@ else
                 nix-env -iA nixpkgs.sd -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/aa0e8072a57e879073cee969a780e586dbe57997.tar.gz
             fi
             
-            # if sd doesnt exist (sd is a better version of sed)
+            # if sd still doesnt exist (sd is a better version of sed)
             if [ -z "$(command -v "sd")" ]
             then
                 curl https://sh.rustup.rs -sSf | sh
+                source "$HOME/.cargo/env"
                 # if cargo exists
                 if [ -n "$(command -v "cargo")" ]
                 then
@@ -105,11 +111,15 @@ else
                 fi
             fi
             
-            sd 'address" default=".*?"' 'address" default="'"$host_ip_address"'"' rb_server.launch
-            sd 'value=".*sb_master/sb_web/cert\.pem' "value=\"$PWD/cert.pem" rb_server.launch
-            sd 'value=".*sb_master/sb_web/key\.pem' "value=\"$PWD/key.pem" rb_server.launch
-            sd 'default=".*sb_master/sb_web/cert\.pem' "default=\"$PWD/cert.pem" rb_server.launch
-            sd 'default=".*sb_master/sb_web/key\.pem' "default=\"$PWD/key.pem" rb_server.launch
+            # if sd exists
+            if [ -n "$(command -v "sd")" ]
+            then
+                sd 'address" default=".*?"' 'address" default="'"$host_ip_address"'"' rb_server.launch
+                sd 'value=".*sb_master/sb_web/cert\.pem' "value=\"$PWD/cert.pem" rb_server.launch
+                sd 'value=".*sb_master/sb_web/key\.pem' "value=\"$PWD/key.pem" rb_server.launch
+                sd 'default=".*sb_master/sb_web/cert\.pem' "default=\"$PWD/cert.pem" rb_server.launch
+                sd 'default=".*sb_master/sb_web/key\.pem' "default=\"$PWD/key.pem" rb_server.launch
+            fi
     fi
 
 fi
