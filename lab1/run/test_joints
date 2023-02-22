@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 path_to_file=""
 file_name=".envrc"
 folder_to_look_in="$PWD"
@@ -34,8 +33,8 @@ else
     . ./.envrc
 
     # 
-    # run lab_1.py
+    # run moveit demo
     # 
-    echo "Make sure to turn on the camera on the webserver"
-    python3 ./catkin_ws/src/sb_master/survivorbuddy_ros/src/lab_1.py
+    cd "$server_folder"
+    python3 sb_test_joint_positions.py
 fi
