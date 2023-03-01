@@ -1,46 +1,27 @@
-# Programming Lab 2: Behaviors and IRM
+# RVIZ camera check: add -> by topic -> camera -> image
 
-## Learning Objectives
+# Part 1.1: The `Engage` Behavior
 
-- Building behaviors from other behaviors or perceptual/motor schemas.
-- Implicit coordination with schemas with IRM.
-- Familiarity with the `OpenCV` library.
-- Have fun thinking about `Petit Mal` robot art installation.
+Extra credit: when a loud noise is heard, make the bot make a noise (extension to lab1)
 
-## Things to bring along to the lab
 
-- Laptop (with Ubuntu 20.04 installed)
-- USB-A to USB-C adapter if you only have USB-C ports on your laptop.
+1. If a human face is detected, orient to it.
+2. If the person moves their head to their-left survivor buddy should move its head to its-left; same way as a mirror works.
+3. If the human face moves closer to survivor buddy, the robot moves close slowly as well (attraction)
+4. test it in `MoveIt`
+5. test it on `Survivor Buddy (SB)`.
 
-## Introduction
+# Part 1.2: The `Confused` Behavior
 
-This assignment consists of 2 parts:
+1. If the human face goes out of view, survivor buddy should act confused.
+2. If no human face is detected for more than `N` seconds (a parameter), start over.
 
-1. Programming two independent behaviors; `Engage` and `Cower`, test it in `MoveIt`, and then on the `Survivor Buddy (SB)`.
+# Part 1.3: The `Cower` Behavior
 
-2. Answering questions related to the concepts used in the assignment and on your implementation.
+1. If a human face is too close, **OR** if the approach is too fast, withdraw (repulsion) and protect its `face` (cower).
+2. test it in `MoveIt`
+3. test it on `Survivor Buddy (SB)`.
 
-## Engage behavior
-
-### Attention-seeking
-
-Hear a loud noise/clap and make a movement/noise to attract attention. The programmer may design any behavior (including generating audio) that they seem appropriate to attract attention.
-
-### Mirroring
-
-If a human face is detected, orient to it. If the human face moves close slowly, the robot moves close slowly as well (attraction). If the person moves head to left, `SB` moves its `face` the same amount to its right (mirroring). The behavior should try to match the speed of the human face movement.
-
-> _Note:_ SB's `face` refers to the phone mounted on it. 
-
-### Confused
-
-If the human face goes out of view, then it acts confused. The programmer may design any behavior that seems appropriate for being `confused`.
-
-> _Note:_ If no human face is detected for more than `N` seconds (a parameter), start over.
-
-## Cower behavior
-
-If a human face is too close, **OR** if the approach is too fast, withdraw (repulsion) and protect its `face` (cower).
 
 ## Extra credit (up to 25%)
 
@@ -51,25 +32,12 @@ If a human face is too close, **OR** if the approach is too fast, withdraw (repu
 
 > _Note:_ For inspiration, check out Simon Penny's `Petit Mal` robot art installation back in 1996 when he had to use ultrasonics instead of cameras [here](https://simonpenny.net/works/petitmal.html).
 
-### Things to keep in mind for the programmer
-
-- **Rapid reflexes**: The reaction needs to be fast, not 3 seconds after you clap.
-- **Not breaking the motors or linkages by overextending**: Does your program expect the robot to start from the same location (aka a neutral position) every time? Or does it handle reacting within safe operational range of the links from any starting location?
-- **Parameters**: How does the program let the sensitivity of volume of the noise and closeness to SB's face to be changed? Is it hardcoded, a command line parameter, or dynamic?
-
-
-## Conceptual and implementation questions
+# Part 2: Answer questions
 
 - What is the difference between implicit and explicit coordination?
-
-- What were the releasers, perceptual schemas, motor schemas, and
-behavioral schemas?
-
-- How did SB produce a reasonable emergent behavior from implicit
-coordination?
-
+- What were the releasers, perceptual schemas, motor schemas, and behavioral schemas?
+- How did SB produce a reasonable emergent behavior from implicit coordination?
 - Draw the actigrams for the behaviors.
-
 - What behaviors do you think Simon Penny used in `Petit Mal`? 
 
 
