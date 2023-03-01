@@ -33,8 +33,10 @@ else
     . ./.envrc
     
     
-    # connect to moveit
-    python3 sb_interface.py &
+    builtin cd "$server_folder"
+    sudo chmod 777 /dev/ttyUSB0
+    # # connect to moveit
+    # python3 sb_interface.py &
     # run the command
     rosrun rosserial_python serial_node.py /dev/ttyUSB0
 fi
